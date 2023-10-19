@@ -37,3 +37,5 @@ for row in rows:
 
 diffs = rides_by_year["2011"] - rides_by_year["2001"]
 print(diffs.most_common(5))
+
+print(tracemalloc.get_traced_memory())
