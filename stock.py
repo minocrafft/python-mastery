@@ -58,7 +58,8 @@ class Stock:
         self.shares -= n
 
     def __repr__(self):
-        return f"Stock({self.name}, {self.shares}, {self.price})"
+        # Note: The !r format code produces the repr() string
+        return f"{type(self).__name__}({self.name!r}, {self.shares!r}, {self.price!r})"
 
     def __eq__(self, other):
         return isinstance(other, Stock) and (
