@@ -1,11 +1,21 @@
+import sys
 import tracemalloc
 from collections import defaultdict, Counter
 
-import readrides
+import reader
 
 tracemalloc.start()
 
-rows = readrides.read_rides_as_dicts("Data/ctabus.csv")
+if False:
+    # Part (b)
+    rows = reader.read_csv_as_dicts(
+        "Data/ctabus.csv", [sys.intern, sys.intern, sys.intern, int]
+    )
+else:
+    # Part (d) - Challenge
+    rows = reader.read_csv_as_columns(
+        "Data/ctabus.csv", [sys.intern, sys.intern, sys.intern, int]
+    )
 
 # Q1
 routes = set()
@@ -38,4 +48,4 @@ for row in rows:
 diffs = rides_by_year["2011"] - rides_by_year["2001"]
 print(diffs.most_common(5))
 
-print(tracemalloc.get_traced_memory())
+print("Memory Use: Current %d, Peak %d" % tracemalloc.get_traced_memory())
