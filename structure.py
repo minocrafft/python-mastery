@@ -1,9 +1,9 @@
-import sys
-import inspect
+from validate import Validator, validated
 
 
 class Structure:
     _fields = ()
+    _types = ()
 
     def __setattr__(self, name, value):
         if name.startswith("_") or name in self._fields:
@@ -29,3 +29,40 @@ class Structure:
         locs = {}
         exec(code, locs)
         cls.__init__ = locs["__init__"]
+
+    @classmethod
+    def __init_subclass__(cls):
+        validate_attributes(cls)
+
+    @classmethod
+    def from_row(cls, row):
+        rowdata = [func(value) for func, value in zip(cls._types, row)]
+        return cls(*rowdata)
+
+
+def validate_attributes(cls):
+    """
+    Class decorator that scans a class definition for Validators
+    and builds a _fields variable that captures their definition order.
+    """
+    validators = []
+    for name, val in vars(cls).items():
+        if isinstance(val, Validator):
+            validators.append(val)
+
+        # Apply validated decorator to any callable with annotations
+        elif callable(val) and val.__annotations__:
+            setattr(cls, name, validated(val))
+
+    # Collect all of the field names
+    cls._fields = tuple([v.name for v in validators])
+
+    # Collect type conversions. The lambda x:x is an identity
+    # function that's used in case no expected_type is found.
+    cls._types = tuple([getattr(v, "expected_type", lambda x: x) for v in validators])
+
+    # Create the __init__ method
+    if cls._fields:
+        cls.create_init()
+
+    return cls

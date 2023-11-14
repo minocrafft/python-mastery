@@ -1,17 +1,15 @@
 from structure import Structure
-from validate import validated, PositiveInteger
+from validate import String, PositiveInteger, PositiveFloat
 
 
 class Stock(Structure):
-    _fields = ("name", "shares", "price")
+    name = String()
+    shares = PositiveInteger()
+    price = PositiveFloat()
 
     @property
     def cost(self):
         return self.shares * self.price
 
-    @validated
     def sell(self, nshares: PositiveInteger):
         self.shares -= nshares
-
-
-Stock.create_init()
