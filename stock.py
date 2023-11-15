@@ -1,5 +1,4 @@
 from structure import Structure
-from validate import String, PositiveInteger, PositiveFloat
 
 
 class Stock(Structure):

@@ -17,6 +17,12 @@ class Validator:
     def __set__(self, instance, value):
         instance.__dict__[self.name] = self.check(value)
 
+    validators = {}
+
+    @classmethod
+    def __init_subclass__(cls):
+        cls.validators[cls.__name__] = cls
+
 
 class Typed(Validator):
     expected_type = object
@@ -66,6 +72,23 @@ class PositiveFloat(Float, Positive):
 
 class NonEmptyString(String, NonEmpty):
     pass
+
+
+_typed_classes = [
+    ("Integer", int),
+    ("Float", float),
+    ("String", str),
+    ("List", list),
+    ("Bool", bool),
+]
+
+globals().update(
+    (
+        name,
+        type(name, (Typed,), {"expected_type": ty}),
+    )
+    for name, ty in _typed_classes
+)
 
 
 def isvalidator(item):
