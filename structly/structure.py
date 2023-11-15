@@ -2,6 +2,9 @@ from .validate import Validator, validated
 from collections import ChainMap
 
 
+__all__ = ["Structure"]
+
+
 class StructureMeta(type):
     @classmethod
     def __prepare__(meta, clsname, bases):
