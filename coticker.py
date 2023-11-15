@@ -2,7 +2,7 @@
 
 import csv
 from structure import Structure
-from cofollow import consumer, follow
+from cofollow import consumer, follow, receive
 from tableformat import create_formatter
 
 
@@ -27,21 +27,21 @@ def to_csv(target):
 
     reader = csv.reader(producer())
     while True:
-        line = yield
+        line = yield from receive(str)
         target.send(next(reader))
 
 
 @consumer
 def create_ticker(target):
     while True:
-        row = yield
+        row = yield from receive(list)
         target.send(Ticker.from_row(row))
 
 
 @consumer
 def negchange(target):
     while True:
-        record = yield
+        record = yield from receive(Ticker)
         if record.change < 0:
             target.send(record)
 
@@ -51,7 +51,7 @@ def ticker(fmt, fields):
     formatter = create_formatter(fmt)
     formatter.headings(fields)
     while True:
-        rec = yield
+        rec = yield from receive(Ticker)
         row = [getattr(rec, name) for name in fields]
         formatter.row(row)
 

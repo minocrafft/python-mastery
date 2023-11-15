@@ -17,6 +17,12 @@ def follow(filename, target):
                 time.sleep(0.1)
 
 
+def receive(expected_type):
+    msg = yield
+    assert isinstance(msg, expected_type), f"Expected type: {expected_type}"
+    return msg
+
+
 def consumer(func):
     @wraps(func)
     def start(*args, **kwargs):
@@ -31,7 +37,7 @@ def consumer(func):
 @consumer
 def printer():
     while True:
-        item = yield  # Receive an item sent to me
+        item = yield from receive(object)  # Receive an item sent to me
         print(item)
 
 
