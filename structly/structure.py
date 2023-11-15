@@ -1,4 +1,4 @@
-from validate import Validator, validated
+from .validate import Validator, validated
 from collections import ChainMap
 
 

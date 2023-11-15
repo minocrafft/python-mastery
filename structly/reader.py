@@ -1,8 +1,6 @@
 import csv
 import logging
 from abc import ABC, abstractmethod
-from collections import defaultdict
-from typing import Callable
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
